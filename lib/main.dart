@@ -16,6 +16,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData.dark(),
       debugShowCheckedModeBanner: false,
       home: LoadingScreen(),
+      //comment
     );
   }
 }
