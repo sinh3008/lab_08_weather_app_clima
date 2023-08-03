@@ -35,8 +35,12 @@ class _LoadingScreenState extends State<LoadingScreen> {
       },
     );
 
-    var response = await http.get(url);
-    print(response.body);
+    http.Response response = await http.get(url);
+    if(response.statusCode == 200){
+      String data = response.body;
+    }else{
+      print(response.statusCode);
+    }
   }
 
   @override
