@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:lab_08_weather_app_clima/utilities/constants.dart';
+import '../services/weather.dart';
+import '../utilities/constants.dart';
 
 class LocationScreen extends StatefulWidget {
   LocationScreen({this.locationWeather});
@@ -17,6 +18,8 @@ class _LocationScreenState extends State<LocationScreen> {
   String? weatherDescription;
   String? cityName;
 
+  WeatherModel weatherModel = WeatherModel();
+
   @override
   void initState() {
     // TODO: implement initState
@@ -26,13 +29,15 @@ class _LocationScreenState extends State<LocationScreen> {
   }
 
   void updateUI(dynamic weatherData) {
-    weatherDescription = weatherData['weather'][0]['description'];
-    cityName = weatherData['name'];
-    countryName = weatherData['sys']['country'];
-    double temperature2 = weatherData['main']['temp'];
-    conditon = weatherData['weather'][0]['id'];
+    setState(() {
+      weatherDescription = weatherData['weather'][0]['description'];
+      cityName = weatherData['name'];
+      countryName = weatherData['sys']['country'];
+      double temperature2 = weatherData['main']['temp'];
+      conditon = weatherData['weather'][0]['id'];
 
-    temperature = temperature2.toInt();
+      temperature = temperature2.toInt();
+    });
   }
 
   @override
@@ -41,7 +46,7 @@ class _LocationScreenState extends State<LocationScreen> {
       body: Container(
         decoration: BoxDecoration(
           image: DecorationImage(
-            image: AssetImage('images/location_background.jpg'),
+            image: const AssetImage('images/location_background.jpg'),
             fit: BoxFit.cover,
             colorFilter: ColorFilter.mode(
               Colors.white.withOpacity(0.8),
@@ -49,7 +54,7 @@ class _LocationScreenState extends State<LocationScreen> {
             ),
           ),
         ),
-        constraints: BoxConstraints.expand(),
+        constraints: const BoxConstraints.expand(),
         child: SafeArea(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -60,14 +65,14 @@ class _LocationScreenState extends State<LocationScreen> {
                 children: [
                   TextButton(
                     onPressed: () {},
-                    child: Icon(
+                    child: const Icon(
                       Icons.near_me,
                       size: 50,
                     ),
                   ),
                   TextButton(
                     onPressed: () {},
-                    child: Icon(
+                    child: const Icon(
                       Icons.location_city,
                       size: 50,
                     ),
@@ -75,7 +80,7 @@ class _LocationScreenState extends State<LocationScreen> {
                 ],
               ),
               Padding(
-                padding: EdgeInsets.only(left: 15),
+                padding: const EdgeInsets.only(left: 15),
                 child: Row(
                   children: [
                     Text(
@@ -83,16 +88,16 @@ class _LocationScreenState extends State<LocationScreen> {
                       style: kTempTextStyle,
                     ),
                     Text(
-                      '☀️',
+                      weatherModel.getWeatherIcon(conditon!),
                       style: kConditionTextStyle,
                     ),
                   ],
                 ),
               ),
               Padding(
-                padding: EdgeInsets.only(right: 15),
+                padding: const EdgeInsets.only(right: 15),
                 child: Text(
-                  "It's 🍦 time in San Francisco!",
+                  weatherModel.getMessage(temperature!) + ' is ${cityName}',
                   textAlign: TextAlign.right,
                   style: kMessageTextStyle,
                 ),
