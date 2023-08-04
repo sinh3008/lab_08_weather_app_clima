@@ -78,3 +78,9 @@ class _LocationScreenState extends State<LocationScreen> {
     );
   }
 }
+
+
+// var longitude2 = decodedData['coord']['lon'];
+// var weatherDescription = decodedData['weather'][0]['description'];
+// var cityName = decodedData['name'];
+// var countryName = decodedData['sys']['country'];
