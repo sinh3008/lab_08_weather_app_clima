@@ -29,7 +29,7 @@ class _LocationScreenState extends State<LocationScreen> {
     updateUI(widget.locationWeather);
   }
 
-  void updateUI(dynamic weatherData) {
+  void updateUI(dynamic weatherData) async {
     setState(() {
       if (weatherData == null) {
         cityName = 'Null';
@@ -40,14 +40,13 @@ class _LocationScreenState extends State<LocationScreen> {
         return;
       }
       cityName = weatherData['name'];
-      double temperature2 = weatherData['main']['temp'];
+      var temperature2 = weatherData['main']['temp'];
       conditon = weatherData['weather'][0]['id'];
 
       temperature = temperature2.toInt();
 
       weatherIcon = weatherModel.getWeatherIcon(conditon!);
-      weatherMessage =
-          weatherModel.getMessage(temperature) + ' is ${cityName}';
+      weatherMessage = weatherModel.getMessage(temperature) + ' is ${cityName}';
     });
   }
 
@@ -76,7 +75,8 @@ class _LocationScreenState extends State<LocationScreen> {
                 children: [
                   TextButton(
                     onPressed: () async {
-                      var weatherData = await weatherModel.getLocationWeather();
+                      var weatherData =
+                          await weatherModel.getLocationWeather();
                       // không setstate vì hàm updateUi có rồi
                       updateUI(weatherData);
                     },
@@ -87,10 +87,23 @@ class _LocationScreenState extends State<LocationScreen> {
                     ),
                   ),
                   TextButton(
-                    onPressed: () {
-                      Navigator.push(
-                          context, MaterialPageRoute(
-                        builder: (context) => CityScreen(),));
+                    onPressed: () async {
+                      var typedName = await Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) {
+                            return CityScreen();
+                          },
+                        ),
+                      );
+                      print(typedName);
+
+                      if (typedName != null) {
+                        var weatherData1 =
+                            await weatherModel.getCityWeather(typedName);
+
+                        updateUI(weatherData1);
+                      }
                     },
                     child: const Icon(
                       Icons.location_city,
