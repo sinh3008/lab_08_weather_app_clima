@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lab_08_weather_app_clima/screen/city_screen.dart';
 import '../services/weather.dart';
 import '../utilities/constants.dart';
 
@@ -43,11 +44,10 @@ class _LocationScreenState extends State<LocationScreen> {
       conditon = weatherData['weather'][0]['id'];
 
       temperature = temperature2.toInt();
-      
+
       weatherIcon = weatherModel.getWeatherIcon(conditon!);
       weatherMessage =
           weatherModel.getMessage(temperature) + ' is ${cityName}';
-
     });
   }
 
@@ -87,7 +87,11 @@ class _LocationScreenState extends State<LocationScreen> {
                     ),
                   ),
                   TextButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.push(
+                          context, MaterialPageRoute(
+                        builder: (context) => CityScreen(),));
+                    },
                     child: const Icon(
                       Icons.location_city,
                       color: Colors.greenAccent,
