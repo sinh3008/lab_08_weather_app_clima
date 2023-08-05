@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:lab_08_weather_app_clima/screen/location_screen.dart';
-import '../services/location.dart';
-import '../services/networking.dart';
-
-const apiKey = '476039ddfa732c52a0cd4abae0f5ad20';
-const country = 'Hanoi';
+import 'package:lab_08_weather_app_clima/services/weather.dart';
+import 'location_screen.dart';
+import '../utilities/constants.dart';
 
 class LoadingScreen extends StatefulWidget {
   const LoadingScreen({super.key});
@@ -15,8 +12,6 @@ class LoadingScreen extends StatefulWidget {
 }
 
 class _LoadingScreenState extends State<LoadingScreen> {
-
-
   @override
   void initState() {
     // TODO: implement initState
@@ -25,25 +20,8 @@ class _LoadingScreenState extends State<LoadingScreen> {
   }
 
   void getLocation() async {
-    Location location = Location();
-    await location.getCurrentLocation();
-    // longitude = location.longitude!;
-    // latitude = location.latitude!;
-
-    var url = Uri.https(
-      'api.openweathermap.org',
-      '/data/2.5/weather',
-      {
-        'lat': '${location.latitude}',
-        'lon': '${location.longitude}',
-        'units': 'metric',
-        'appid': apiKey,
-      },
-    );
-
-    NetWorkHelper netWorkHelper = NetWorkHelper(url: url);
-
-    var weatherData = await netWorkHelper.getData();
+    WeatherModel weatherModel = WeatherModel();
+    var weatherData = await weatherModel.getLocationWeather();
     Navigator.push(
       context,
       MaterialPageRoute(
@@ -77,7 +55,10 @@ class _LoadingScreenState extends State<LoadingScreen> {
           children: [
             TextButton(
               onPressed: () {},
-              child: Text('Please Clicked!'),
+              child: Text(
+                'Loading!',
+                style: kButtonTextStyle,
+              ),
             ),
             spinkit,
           ],

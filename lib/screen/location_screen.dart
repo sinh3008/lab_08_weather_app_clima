@@ -12,11 +12,11 @@ class LocationScreen extends StatefulWidget {
 }
 
 class _LocationScreenState extends State<LocationScreen> {
-  int? temperature;
-  String? countryName;
+  int temperature = 0;
   int? conditon;
-  String? weatherDescription;
   String? cityName;
+  String weatherIcon = '';
+  String weatherMessage = '';
 
   WeatherModel weatherModel = WeatherModel();
 
@@ -30,13 +30,24 @@ class _LocationScreenState extends State<LocationScreen> {
 
   void updateUI(dynamic weatherData) {
     setState(() {
-      weatherDescription = weatherData['weather'][0]['description'];
+      if (weatherData == null) {
+        cityName = 'Null';
+        conditon = 0;
+        temperature = 0;
+        weatherIcon = 'Error';
+        weatherMessage = 'Unable to get weather data';
+        return;
+      }
       cityName = weatherData['name'];
-      countryName = weatherData['sys']['country'];
       double temperature2 = weatherData['main']['temp'];
       conditon = weatherData['weather'][0]['id'];
 
       temperature = temperature2.toInt();
+      
+      weatherIcon = weatherModel.getWeatherIcon(conditon!);
+      weatherMessage =
+          weatherModel.getMessage(temperature) + ' is ${cityName}';
+
     });
   }
 
@@ -64,9 +75,14 @@ class _LocationScreenState extends State<LocationScreen> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   TextButton(
-                    onPressed: () {},
+                    onPressed: () async {
+                      var weatherData = await weatherModel.getLocationWeather();
+                      // không setstate vì hàm updateUi có rồi
+                      updateUI(weatherData);
+                    },
                     child: const Icon(
                       Icons.near_me,
+                      color: Colors.greenAccent,
                       size: 50,
                     ),
                   ),
@@ -74,6 +90,7 @@ class _LocationScreenState extends State<LocationScreen> {
                     onPressed: () {},
                     child: const Icon(
                       Icons.location_city,
+                      color: Colors.greenAccent,
                       size: 50,
                     ),
                   ),
@@ -84,11 +101,11 @@ class _LocationScreenState extends State<LocationScreen> {
                 child: Row(
                   children: [
                     Text(
-                      '$temperature',
+                      '$temperature° ',
                       style: kTempTextStyle,
                     ),
                     Text(
-                      weatherModel.getWeatherIcon(conditon!),
+                      weatherIcon,
                       style: kConditionTextStyle,
                     ),
                   ],
@@ -97,7 +114,7 @@ class _LocationScreenState extends State<LocationScreen> {
               Padding(
                 padding: const EdgeInsets.only(right: 15),
                 child: Text(
-                  weatherModel.getMessage(temperature!) + ' is ${cityName}',
+                  weatherMessage,
                   textAlign: TextAlign.right,
                   style: kMessageTextStyle,
                 ),
